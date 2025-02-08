@@ -1,7 +1,10 @@
+import React from 'react';
+import {createRoot} from "react-dom";
+
 const Pizza = (props) => {
   return React.createElement("div", {}, [
     React.createElement("h1", {}, props.name,
-    React.createElement("p", {}, props.description))
+      React.createElement("p", {}, props.description))
   ])
 }
 
@@ -16,7 +19,7 @@ const App = () => {
         description: "Pedro ginos",
       }),
       React.createElement(Pizza, {
-        name:"Mozzarella",
+        name: "Mozzarella",
         description: "my mozzarella",
       }),
       React.createElement(Pizza),
@@ -26,5 +29,5 @@ const App = () => {
 }
 
 const container = document.getElementById("root")
-const root = ReactDOM.createRoot(container);
+const root = createRoot(container);
 root.render(React.createElement(App))
