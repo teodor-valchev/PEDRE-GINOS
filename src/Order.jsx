@@ -1,31 +1,60 @@
 import {Pizza} from './Pizza'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
-export default function Order () {
-  const [pizzaType, setPizzaType] = useState("pepperoni")
-  const [pizzaSize, setPizzaSize] = useState("S")
+const intl = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+})
 
-return (
-  <div className='order'>
-    <h2>Create Order</h2>
-    <form>
-      <div>
+export default function Order() {
+  const [pizzaTypes, setPizzaTypes] = useState([]);
+  const [pizzaType, setPizzaType] = useState("pepperoni");
+  const [pizzaSize, setPizzaSize] = useState("S");
+  const [loading, setLoading] = useState(true);
+
+  let price, selectedPizza;
+
+  if (!loading) {
+    selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
+  }
+
+  console.log(selectedPizza)
+
+  async function getPizza() {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const pizzaRes = await  fetch("/api/pizzas")
+    const pizzaJson = await pizzaRes.json();
+    setPizzaTypes(pizzaJson);
+    setLoading(false);
+  }
+  useEffect(  async() => {
+     await getPizza();
+  }, [])
+
+  return (
+    <div className='order'>
+      <h2>Create Order</h2>
+      <form>
         <div>
-          <label htmlFor="pizza-type">Pizza Type</label>
-          <select
-            onChange={(e) => setPizzaType(e.target.value)}
-            name='pizza-type' value={pizzaType}>
-            <option value="pepperoni">The Pepperoni Pizza</option>
-            <option value="hawaiian">The Hawaiian Pizza</option>
-            <option value="big_meat">The Big Meat Pizza</option>
-          </select>
-        </div>
-        <div >
-          <label htmlFor="pizza-size"> Pizza Size</label>
           <div>
+            <label htmlFor="pizza-type">Pizza Type</label>
+            <select
+              onChange={(e) => setPizzaType(e.target.value)}
+              name='pizza-type' value={pizzaType}>
+              {pizzaTypes.map((pizzaType) => (
+                <option key={pizzaType.id}
+                         value={pizzaType.category}
+                >{pizzaType.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="pizza-size"> Pizza Size</label>
+            <div>
             <span>
               <input
-                checked={pizzaSize ==="S"}
+                checked={pizzaSize === "S"}
                 type="radio"
                 name="pizza-size"
                 value='S'
@@ -34,9 +63,9 @@ return (
               />
               <label htmlFor="pizza-s">Small</label>
             </span>
-            <span>
+              <span>
               <input
-                checked={pizzaSize ==="M"}
+                checked={pizzaSize === "M"}
                 type="radio"
                 name="pizza-size"
                 value='M'
@@ -45,9 +74,9 @@ return (
               />
               <label htmlFor="pizza-m">Medium</label>
             </span>
-            <span>
+              <span>
               <input
-                checked={pizzaSize ==="L"}
+                checked={pizzaSize === "L"}
                 type="radio"
                 name="pizza-size"
                 value='L'
@@ -56,19 +85,19 @@ return (
               />
               <label htmlFor="pizza-l">Large</label>
             </span>
+            </div>
+          </div>
+          <button type="submit">Add to Cart</button>
+          <div className="order-pizza">
+            <Pizza
+              name={selectedPizza?.name}
+              desription={selectedPizza?.desription}
+              image={selectedPizza?.image}
+            />
+            <p>13.37$</p>
           </div>
         </div>
-        <button type="submit">Add to Cart</button>
-        <div className="order-pizza">
-          <Pizza
-            name='Peperoni'
-            desription='another pep pizza'
-            image={"./public/pizzas/pepperoni.webp"}
-          />
-          <p>13.37$</p>
-        </div>
-      </div>
-    </form>
-  </div>
-)
+      </form>
+    </div>
+  )
 }
