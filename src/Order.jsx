@@ -16,21 +16,18 @@ export default function Order() {
 
   if (!loading) {
     selectedPizza = pizzaTypes.find((pizza) => pizzaType === pizza.id);
+    price = intl.format(selectedPizza?.sizes[pizzaSize]);
   }
 
-  console.log(selectedPizza)
-
   async function getPizza() {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     const pizzaRes = await  fetch("/api/pizzas")
     const pizzaJson = await pizzaRes.json();
     setPizzaTypes(pizzaJson);
     setLoading(false);
   }
-  useEffect(  async() => {
-     await getPizza();
-  }, [])
+  useEffect(() => {
+      getPizza(pizzaSize);
+  }, []);
 
   return (
     <div className='order'>
@@ -89,12 +86,14 @@ export default function Order() {
           </div>
           <button type="submit">Add to Cart</button>
           <div className="order-pizza">
-            <Pizza
+            {loading ? <h1>lol</h1> :
+              (
+              <Pizza
               name={selectedPizza?.name}
               desription={selectedPizza?.desription}
               image={selectedPizza?.image}
-            />
-            <p>13.37$</p>
+            />)}
+            <p>{price}</p>
           </div>
         </div>
       </form>
