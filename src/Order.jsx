@@ -22,15 +22,28 @@ export default function Order() {
     price = intl.format(selectedPizza?.sizes[pizzaSize]);
   }
 
-  console.log(pizzaType);
-  console.log(pizzaTypes)
-
   async function getPizza() {
     const pizzaRes = await fetch("/api/pizzas")
     const pizzaJson = await pizzaRes.json();
     setPizzaTypes(pizzaJson);
     setLoading(false);
   }
+
+  async function checkout() {
+    setLoading(true);
+
+    await fetch("/api/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      }, body: JSON.stringify({cart})
+    })
+
+    setCart([]);
+    setLoading(false);
+  }
+
+  console.log(...cart)
 
   useEffect(() => {
     getPizza();
@@ -42,7 +55,7 @@ export default function Order() {
         <h2>Create Order</h2>
         <form onSubmit={(e) => {
           e.preventDefault();
-          setCart([...cart, {pizza: selectedPizza, sizes: pizzaSize, price}]);
+          setCart([...cart, {pizza: selectedPizza, sizes: pizzaSize, price, size: pizzaSize}]);
         }}>
           <div>
             <div>
@@ -114,7 +127,7 @@ export default function Order() {
         </form>
       </div>
       {
-        loading ? <p>Loading...</p> : <Cart cart={cart}/>
+        loading ? <p>Loading...</p> : <Cart checkout={checkout} cart={cart}/>
       }
     </div>
   )

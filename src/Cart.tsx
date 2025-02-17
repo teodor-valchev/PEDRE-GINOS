@@ -7,7 +7,7 @@ const intl = new Intl.NumberFormat('en-US', {
 export const Cart = ({cart, checkout}) => {
   let total = 0;
 
-  for (let i = 0; i < cart.lenght; i++) {
+  for (let i = 0; i < cart.length; i++) {
     let current = cart[i];
     total += current.pizza.sizes[current.size];
   }
