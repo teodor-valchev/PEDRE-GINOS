@@ -19,6 +19,9 @@ export default function Order() {
     price = intl.format(selectedPizza?.sizes[pizzaSize]);
   }
 
+  console.log(pizzaType);
+  console.log(pizzaTypes)
+
   async function getPizza() {
     const pizzaRes = await  fetch("/api/pizzas")
     const pizzaJson = await pizzaRes.json();
@@ -26,7 +29,7 @@ export default function Order() {
     setLoading(false);
   }
   useEffect(() => {
-      getPizza(pizzaSize);
+      getPizza();
   }, []);
 
   return (
@@ -41,7 +44,7 @@ export default function Order() {
               name='pizza-type' value={pizzaType}>
               {pizzaTypes.map((pizzaType) => (
                 <option key={pizzaType.id}
-                         value={pizzaType.category}
+                         value={pizzaType.id}
                 >{pizzaType.name}</option>
               ))}
             </select>
