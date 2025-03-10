@@ -1,1 +1,1 @@
-Pizza app builded with React 
+Pizza app built with React 
